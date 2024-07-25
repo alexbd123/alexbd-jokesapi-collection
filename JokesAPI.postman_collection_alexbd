@@ -1,0 +1,345 @@
+{
+	"info": {
+		"_postman_id": "fda948f6-63d1-45cf-92d8-430d0185a5d0",
+		"name": "Jokes API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37171707"
+	},
+	"item": [
+		{
+			"name": "GET /joke/{id}",
+			"item": [
+				{
+					"name": "GET one joke (happy path)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Correct id returns a joke\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{productionURL}}/jokes/1",
+							"host": [
+								"{{productionURL}}"
+							],
+							"path": [
+								"jokes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET invalid joke id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Invalid ID throws error\", () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{productionURL}}/jokes/500000000000",
+							"host": [
+								"{{productionURL}}"
+							],
+							"path": [
+								"jokes",
+								"500000000000"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST /joke/",
+			"item": [
+				{
+					"name": "POST joke (valid body)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Joke posts successfully with valid body\", () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"})\r",
+									"\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set(\"jokeID\", response.id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"type\": \"general\",\r\n  \"setup\": \"Why did {{$randomStreetAddress}} disappear?\",\r\n  \"punchline\": \"Because the postman sent a delete request.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{testingURL}}/jokes",
+							"host": [
+								"{{testingURL}}"
+							],
+							"path": [
+								"jokes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST joke (invalid body)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Joke posts unsuccessfully with invalid body\", () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Hello: \"general\",\r\n  \"There\": \"Why did {{$randomStreetAddress}} disappear?\",\r\n  \"MYNAMEISALEX\": \"Because the postman sent a delete request.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{testingURL}}/jokes",
+							"host": [
+								"{{testingURL}}"
+							],
+							"path": [
+								"jokes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE /joke/{id}",
+			"item": [
+				{
+					"name": "DELETE single joke (valid ID)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete joke with valid ID\", () => {\r",
+									"    pm.response.to.hae.status(200);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{testingURL}}/jokes/{{jokeID}}",
+							"host": [
+								"{{testingURL}}"
+							],
+							"path": [
+								"jokes",
+								"{{jokeID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE single joke (invalid ID)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Can't delete joke with invalid ID\", () => {\r",
+									"    pm.response.to.have.status(404);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{testingURL}}/jokes/\"turnip\"",
+							"host": [
+								"{{testingURL}}"
+							],
+							"path": [
+								"jokes",
+								"\"turnip\""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GET all jokes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"console.log(response);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{testingURL}}/jokes/{{jokeID}}",
+					"host": [
+						"{{testingURL}}"
+					],
+					"path": [
+						"jokes",
+						"{{jokeID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST joke",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\": \"general\",\r\n    \"author\": \"Alex BD\",\r\n    \"setup\": \"Why did the postman cross the road?\",\r\n    \"punchline\": \"The other side made a GET request.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{testingURL}}/jokes",
+					"host": [
+						"{{testingURL}}"
+					],
+					"path": [
+						"jokes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE joke",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{testingURL}}/10000002",
+					"host": [
+						"{{testingURL}}"
+					],
+					"path": [
+						"10000002"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "productionURL",
+			"value": "https://jokes-with-swagger-pr-1.onrender.com"
+		},
+		{
+			"key": "testingURL",
+			"value": "https://jokes-with-swagger-pr-1.onrender.com"
+		},
+		{
+			"key": "jokeID",
+			"value": ""
+		}
+	]
+}
